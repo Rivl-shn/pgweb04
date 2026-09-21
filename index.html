@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeafletJS</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+</head>
+
+<body>
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <style>
+        html,
+        body,
+        #map {
+            height: 100%;
+            margin: 0;
+        }
+    </style>
+    <script>
+        //Initialize Map
+        var map = L.map('map').setView([-6.9902991, 110.4229563
+        ], 10);
+
+        // Tile Layer Base Map
+        var osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution:
+                '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        });
+
+        var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+        });
+
+        var rupabumiindonesia = L.tileLayer('https://geoservices.big.go.id/rbi/rest/services/BASEMAP/Rupabumi_Indonesia/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Badan Informasi Geospasial'
+        });
+
+        var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        });
+        var Google_Satellite = L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+            maxZoom: 20,
+            subdomains: ["mt0", "mt1", "mt2", "mt3"],
+            attribution: 'Google'
+        });
+        // Menambahkan basemap ke dalam peta
+        OpenStreetMap_Mapnik.addTo(map);
+        // Marker
+        var marker = L.marker([-6.1753924, 106.8271528]);
+        var marker2 = L.marker([-5.1312952, 119.4124603]);
+
+        // Menambahkan marker ke dalam peta
+        marker.addTo(map);
+        marker2.addTo(map);
+
+        // Popup
+        marker.bindPopup("<b>Jakarta</b> adalah ibu kota Indonesia dan sekaligus daerah otonom setingkat provinsi. Jakarta memiliki lima kota administrasi dan satu kabupaten administrasi. DKI Jakarta dapat digolongkan sebagai kota metropolitan, dan mendapat julukan The Big Durian karena dianggap sebanding dengan Kota New York (Big Apple) di Amerika Serikat.");
+        marker.openPopup();
+        marker2.bindPopup("<b>Makassar</b> sebelumnya bernama Ujung Pandang (nama benteng suku makassar), adalah ibu kota Provinsi Sulawesi Selatan, Indonesia. Sebelumnya, kota yang sejak 1971 hingga 1999 dikenal secara resmi sebagai Ujung Pandang ini merupakan kota terbesar di wilayah Indonesia Timur dan pusat kota terbesar ketujuh di Indonesia dari jumlah penduduk setelah Jakarta, Surabaya, Medan, Bandung, Semarang, dan Palembang. Kota ini terletak di pesisir barat daya pulau Sulawesi, menghadap Selat Makassar.");
+        marker2.openPopup();
+
+        // Tooltip
+        marker.bindTooltip("Jakarta");
+        marker.openTooltip();
+        marker2.bindTooltip("Makassar");
+        marker2.openTooltip();
+
+        // Circle
+        var circle = L.circle([-3.3269862, 114.5764160], {
+            color: "red", // warna garis
+            opacity: 1, // opacity garis
+            fillColor: "#f03", // warna fill
+            fillOpacity: 0.5, // opacity fill
+            radius: 70000, // radius dalam meter
+        });
+
+        // Menambahkan circle ke dalam peta
+        circle.addTo(map);
+
+        // Popup
+        circle.bindPopup("<b>Hallo</b><br>Ini adalah popup circle radius 70 kilometer");
+        circle.openPopup();
+
+        // Tooltip
+        circle.bindTooltip("Ini adalah tooltip circle", { sticky: true });
+        circle.openTooltip();
+
+        // Control Layer
+        var baseMaps = {
+            "OpenStreetMap": osm,
+            "Esri World Imagery": Esri_WorldImagery,
+            "Rupa Bumi Indonesia": rupabumiindonesia,
+            "Google Satelite": Google_Satellite,
+        };
+
+        var overlayMaps = {
+            "Jakarta ": marker,
+            "Makassar ": marker2,
+            "Circle": marker,
+        };
+        // Polyline
+        var vertexPolyline = [
+            [-7.1881009, 110.3466797],
+            [-8.4180363, 115.1586914],
+            [-8.6136099, 119.8937988],
+            [-5.5722498, 122.6293945],
+        ];
+        var polyline = L.polyline(vertexPolyline, {
+            color: "red", // warna garis
+            weight: 5, // ketebalan garis
+            opacity: 1, // opacity garis
+        });
+        // Popup
+        polyline.bindPopup("<b>Hallo</b><br>Ini adalah popup polyline");
+        polyline.openPopup();
+
+        // Tooltip
+        polyline.bindTooltip("Ini adalah tooltip polyline", { sticky: true });
+        polyline.openTooltip();
+
+        // Menambahkan polyline ke dalam peta
+        polyline.addTo(map);
+        var controllayer = L.control.layers(baseMaps, overlayMaps, { collapsed: false });
+        controllayer.addTo(map);
+
+        // Polygon
+        var vertexPolygon = [
+            [-7.1881009, 110.3466797],
+            [-8.4180363, 115.1586914],
+            [-8.6136099, 119.8937988],
+            [-5.5722498, 122.6293945],
+        ];
+        var polygon = L.polygon(vertexPolygon, {
+            color: "purple", // warna garis
+            weight: 3, // ketebalan garis
+            opacity: 1, // opacity garis
+            fillColor: "#0f3", // warna fill
+            fillOpacity: 0.5, // opacity fill
+        });
+
+        // Menambahkan polygon ke dalam peta
+        polygon.addTo(map);
+
+        // Popup
+        polygon.bindPopup("<b>Hallo</b><br>Ini adalah popup polygon");
+        polygon.openPopup();
+
+        // Tooltip
+        polygon.bindTooltip("Ini adalah tooltip polygon", { sticky: true });
+        polygon.openTooltip();
+
+        // Scale
+        var scale = L.control.scale({
+            position: "bottomleft", // posisi valid: topleft, topright, bottomleft, bottomright
+            metric: true,
+            imperial: false
+        });
+        scale.addTo(map);
+        // Geolocation
+        map.locate({
+            setView: true,
+            maxZoom: 16,
+        });
+
+        // Fungsi untuk menampilkan lokasi
+        function onLocationFound(e) {
+            var radius = e.accuracy / 2;
+
+            // Menampilkan marker pada lokasi 
+            L.marker(e.latlng).addTo(map).bindPopup("Anda berada dalam radius " + radius + " meter dari titik ini").openPopup();
+
+            // Menampilkan circle pada lokasi
+            L.circle(e.latlng, radius).addTo(map);
+        }
+
+        map.on("locationfound", onLocationFound);
+
+        // Fungsi untuk menampilkan pesan error
+        function onLocationError(e) {
+            alert(e.message);
+        }
+
+        map.on("locationerror", onLocationError);
+    </script>
+
+</body>
+
+</html>
